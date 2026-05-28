@@ -1,37 +1,54 @@
-# Iac
 all:
   children:
-    cisco_switches:
+
+    ios_switches:
       hosts:
+
         Sw1:
-          ansible_host: 192.168.1.100
+          ansible_host: 10.10.10.1
 
         Sw2:
-          ansible_host: 192.168.1.101
+          ansible_host: 10.10.10.2
 
       vars:
         ansible_connection: ansible.netcommon.network_cli
         ansible_network_os: cisco.ios.ios
+
         ansible_user: admin
         ansible_password: qwer
+
         ansible_become: true
         ansible_become_method: enable
-        ansible_become_password: qwer
+        ansible_become_password: qwert
 
----
-- name: Configure different Port-channel VLAN per switch
-  hosts: cisco_switches
-  gather_facts: false
-  serial: 1
+    nxos_switches:
+      hosts:
 
-  vars:
-    backup_dir: "./backup"
-    run_id: "{{ lookup('pipe', 'date +%Y%m%d_%H%M%S') }}"
+        bb1:
+          ansible_host: 10.10.10.254
 
-    switch_config:
-      Sw1:
-        interface: "Port-channel1"
-        vlan: 100
+      vars:
+        ansible_connection: ansible.netcommon.network_cli
+        ansible_network_os: cisco.nxos.nxos
+
+        ansible_user: admin
+        ansible_password: qwer
+
+    fortigates:
+      hosts:
+
+        fw1:
+          ansible_host: 10.10.10.253
+
+      vars:
+        ansible_connection: httpapi
+        ansible_network_os: fortinet.fortios.fortios
+
+        ansible_user: admin
+        ansible_password: qwer
+
+        ansible_httpapi_use_ssl: true
+        ansible_httpapi_validate_certs: false        vlan: 100
       Sw2:
         interface: "Port-channel3"
         vlan: 200
